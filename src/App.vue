@@ -1,17 +1,17 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import Header from "./components/Header.vue";
+import Footer from "./components/Footer.vue";
 </script>
 
 <template>
-  <Header />
-  <RouterView />
+  <div id="app">
+    <Header />
+    <div id="main-content">
+      <RouterView />
+    </div>
+    <Footer />
+  </div>
 </template>
 
-<style scoped>
-#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ensures full-page height */
-}
-</style>
+<style scoped></style>

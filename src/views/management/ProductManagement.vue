@@ -2,6 +2,6 @@
 
 <template>
   <main>
-    <p>Homepage</p>
+    <p>Product Management</p>
   </main>
 </template>

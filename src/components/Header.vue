@@ -30,11 +30,18 @@ const navigationData = ref([
 </script>
 
 <template>
-  <header class="bg-secondary text-white fixed-top">
+  <header class="bg-secondary text-white">
     <!-- Top Bar (Logo & User Menu) -->
-    <div class="py-3 container d-flex justify-content-between align-items-center">
-      <RouterLink to="/" class="text-white fs-4 text-decoration-none">ElectroCore</RouterLink>
-      <ul class="nav">
+    <div
+      class="py-3 container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center headerbar"
+    >
+      <!-- Logo -->
+      <div class="text-center text-md-start">
+        <RouterLink to="/" class="text-white fs-4 text-decoration-none">ElectroCore</RouterLink>
+      </div>
+
+      <!-- User Menu -->
+      <ul class="nav mt-2 mt-md-0">
         <li v-if="user.isLoggedIn" class="nav-item dropdown">
           <a
             class="nav-link text-white px-2 d-flex align-items-center dropdown-toggle"
@@ -42,10 +49,9 @@ const navigationData = ref([
             role="button"
             data-bs-toggle="dropdown"
           >
-            <i class="bi bi-person me-2 fs-4"></i>
             <span class="text-decoration-underline">{{ user.username }}</span>
           </a>
-          <ul class="dropdown-menu dropdown-menu-end">
+          <ul class="dropdown-menu dropdown-menu-end user-dropdown">
             <li><RouterLink class="dropdown-item" to="/account">Account Details</RouterLink></li>
             <li v-if="user.isAdmin">
               <RouterLink class="dropdown-item" to="/admin/products">Product Management</RouterLink>
@@ -69,8 +75,11 @@ const navigationData = ref([
     </div>
 
     <!-- Navigation Bar (Categories & Search) -->
-    <nav class="py-2 text-bg-primary">
-      <div class="container d-flex justify-content-between align-items-center">
+    <nav class="py-2 text-bg-primary navbar">
+      <div
+        class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center"
+      >
+        <!-- Categories -->
         <ul class="nav">
           <li v-for="category in navigationData" :key="category.category" class="nav-item dropdown">
             <a
@@ -81,7 +90,7 @@ const navigationData = ref([
             >
               {{ category.category }}
             </a>
-            <ul class="dropdown-menu bg-primary">
+            <ul class="dropdown-menu bg-primary category-dropdown">
               <li>
                 <RouterLink
                   :to="'/products?category=' + category.category"
@@ -101,7 +110,7 @@ const navigationData = ref([
         </ul>
 
         <!-- Search Form -->
-        <form action="/products/index" method="GET" class="d-flex">
+        <form action="/products/index" method="GET" class="d-flex mt-2 mt-md-0">
           <input
             class="form-control me-2"
             type="search"
@@ -117,29 +126,47 @@ const navigationData = ref([
 </template>
 
 <style scoped>
-/* Ensure header stays fixed at the top */
-header {
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1030;
-}
-
-/* Prevent overlap by adding padding to the page */
-main {
-  padding-top: 100px; /* Adjust based on header height */
-}
-
 /* Show dropdowns on hover */
 .nav-item.dropdown:hover .dropdown-menu {
   display: block;
   margin-top: 0;
 }
 
-/* Adjust spacing for navigation */
-nav {
-  width: 100%;
-  text-align: left;
+.navbar,
+.headerbar {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Style for the user dropdown */
+.nav-item.dropdown .dropdown-menu.user-dropdown {
+  left: auto;
+  right: 0;
+  max-width: 90vw; /* Optional: To ensure it doesn't overflow */
+  overflow-x: auto;
+  z-index: 1050; /* Ensure it stays above other content */
+}
+
+/* Style for the category dropdown */
+.nav-item.dropdown .dropdown-menu.category-dropdown {
+  position: absolute;
+  left: 0; /* This allows the category menu to expand naturally */
+  right: auto;
+  max-width: none; /* No width limit for category dropdown */
+}
+
+/* Ensure dropdown is displayed correctly */
+@media (min-width: 768px) {
+  .nav-item .dropdown-menu {
+    position: absolute;
+  }
+}
+
+@media (min-width: 768px) {
+  .navbar,
+  .headerbar {
+    padding-left: 3rem;
+    padding-right: 3rem;
+  }
 }
 </style>

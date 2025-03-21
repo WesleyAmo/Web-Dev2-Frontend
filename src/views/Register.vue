@@ -2,6 +2,6 @@
 
 <template>
   <main>
-    <p>Homepage</p>
+    <p>Register</p>
   </main>
 </template>
