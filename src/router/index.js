@@ -6,6 +6,8 @@ import MyAccount from "../views/MyAccount.vue";
 import ProductManagement from "../views/management/ProductManagement.vue";
 import OrderManagement from "../views/management/OrderManagement.vue";
 import ShoppingCart from "../views/ShoppingCart.vue";
+import ProductView from "../components/products/ProductDetailView.vue"; // Add this import
+import ProductList from "../components/products/ProductList.vue"; // Add this import
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -44,6 +46,17 @@ const router = createRouter({
       path: "/shoppingcart",
       name: "shoppingcart",
       component: ShoppingCart,
+    },
+    {
+      path: "/products/:id", // Add this new route
+      name: "product-detail",
+      component: ProductView,
+      props: true,
+    },
+    {
+      path: "/products",
+      name: "product",
+      component: ProductList,
     },
   ],
 });

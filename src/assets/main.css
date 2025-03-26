@@ -1,1 +1,19 @@
 @import "./base.css";
+
+body {
+  background-color: rgb(226, 237, 255);
+}
+
+.button {
+  background-color: rgb(8, 34, 75);
+  color: white;
+}
+
+.button:hover {
+  background-color: rgb(68, 129, 226);
+  color: white;
+}
+
+a {
+  color: rgb(8, 34, 75);
+}

@@ -1,47 +1,32 @@
 <script setup>
-import { ref, computed } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import axios from "../axios-auth";
 
-const router = useRouter();
-// Navigation categories (this can be replaced with data fetched from an API)
-const navigationData = ref([
-  {
-    category: "Electronics",
-    subcategories: ["Laptops", "Smartphones", "Cameras"],
-  },
-  {
-    category: "Appliances",
-    subcategories: ["Refrigerators", "Microwaves", "Air Conditioners"],
-  },
-  // Add more categories as needed
-]);
+// Navigation categories fetched from API
+const categories = ref([]);
+
+// Fetch categories from API on component mount
+onMounted(async () => {
+  try {
+    const response = await axios.get("/categories");
+    categories.value = response.data; // Assuming response.data is an array of objects with id and name
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+  }
+});
 </script>
 
 <template>
-  <footer class="bg-primary text-white">
-    <div class="container py-5 mt-5 border-top">
+  <footer class="text-white">
+    <div class="container py-5 border-top">
       <div class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        <div v-for="category in navigationData" :key="category.category" class="col text-center">
+        <div v-for="category in categories" :key="category.id" class="col text-center">
           <RouterLink
-            :to="'/products?category=' + category.category"
+            :to="'/products?category=' + category.name"
             class="fw-bold text-white text-decoration-none fs-4"
           >
-            {{ category.category }}
+            {{ category.name }}
           </RouterLink>
-          <ul class="nav flex-column">
-            <li
-              v-for="subcategory in category.subcategories"
-              :key="subcategory"
-              class="nav-item mb-2"
-            >
-              <RouterLink
-                :to="'/products?subcategory=' + subcategory"
-                class="nav-link p-0 text-white text-decoration-none"
-              >
-                {{ subcategory }}
-              </RouterLink>
-            </li>
-          </ul>
         </div>
       </div>
       <div class="row">
@@ -61,8 +46,8 @@ const navigationData = ref([
 
 <style scoped>
 footer {
-  background-color: var(--bs-primary);
   color: var(--bs-white);
+  background-color: rgb(8, 34, 75);
 }
 
 footer a {
