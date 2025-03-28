@@ -172,9 +172,27 @@ export default {
           this.$router.push("/login");
           return;
         }
-        await axios.post(`/cart/checkout`, { user_id: authStore.user.id });
+
+        // Prepare the order data in the required format
+        const orderData = {
+          user: {
+            id: authStore.user.id,
+          },
+          total_amount: this.total,
+          status: "pending",
+          items: this.cartItems.map((item) => ({
+            product: {
+              id: item.product.id,
+            },
+            quantity: item.quantity,
+          })),
+        };
+
+        // Send the request to create the order
+        await axios.post(`/orders/create/${authStore.user.id}`, orderData);
+
         this.cartItems = [];
-        this.$router.push("/order-confirmation");
+        this.$router.push("/cart");
       } catch (error) {
         console.error("Error during checkout:", error);
         this.error = "Checkout failed. Please try again.";

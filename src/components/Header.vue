@@ -161,7 +161,7 @@ onMounted(() => {
                   Product Management
                 </RouterLink>
               </li>
-              <li>
+              <li v-if="authStore.isAdmin">
                 <RouterLink to="/orders" class="dropdown-item" @click="showDropdown = false">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

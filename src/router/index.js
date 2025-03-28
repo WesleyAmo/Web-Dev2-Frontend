@@ -8,6 +8,7 @@ import CreateProduct from "../views/CreateProduct.vue";
 import ShoppingCart from "../views/ShoppingCart.vue";
 import ProductView from "../components/products/ProductDetailView.vue"; // Add this import
 import ProductList from "../components/products/ProductList.vue"; // Add this import
+import OrderManagement from "../views/OrderManagement.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -61,6 +62,11 @@ const router = createRouter({
     {
       path: "/productmanagement/createproduct",
       component: CreateProduct,
+    },
+    {
+      path: "/orders",
+      name: "OrderManagement",
+      component: OrderManagement,
     },
   ],
 });
