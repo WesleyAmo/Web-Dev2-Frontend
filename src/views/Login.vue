@@ -55,49 +55,35 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRouter, useRoute } from "vue-router"; // Import useRouter and useRoute
-import axios from "../axios-auth";
+import { useRouter, useRoute } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
 
 const email = ref("");
 const password = ref("");
-const error = ref(null);
 const successMessage = ref(null);
-
+const authStore = useAuthStore();
 const router = useRouter();
-const route = useRoute(); // Get the route to access query parameters
+const route = useRoute();
 
 onMounted(() => {
-  // Check if there is a successMessage in the query params
   if (route.query.successMessage) {
     successMessage.value = route.query.successMessage;
   }
 });
 
 const login = async () => {
-  // Frontend validation
   if (!email.value || !password.value) {
-    error.value = "Both email and password are required.";
+    authStore.error = "Both email and password are required.";
     return;
   }
 
   try {
-    // Send login data to your API
-    const response = await axios.post("/login", {
+    await authStore.login({
       email: email.value,
       password: password.value,
     });
-
-    // Store the JWT in localStorage (or sessionStorage)
-    const token = response.data.token; // Assuming token is returned in response.data.token
-    if (token) {
-      localStorage.setItem("authToken", token); // Store token in localStorage
-    }
-
-    // Optionally, handle success message for login if needed
-    router.push("/"); // Redirect to dashboard or home page after successful login
   } catch (err) {
-    // Handle error response from API
-    error.value = err.response?.data?.errorMessage || err.errorMessage;
+    // Error is already handled in the store
   }
 };
 </script>

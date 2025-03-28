@@ -112,9 +112,6 @@ const applyFilters = () => {
         </select>
       </div>
     </form>
-
-    <!-- Category Title -->
-
     <div class="row mt-5">
       <!-- Loading State -->
       <div v-if="loading" class="text-center py-5">

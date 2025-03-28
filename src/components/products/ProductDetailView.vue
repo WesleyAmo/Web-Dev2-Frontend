@@ -56,17 +56,19 @@
                 <div class="input-group">
                   <input
                     type="number"
-                    v-model="quantity"
+                    v-model.number="quantity"
                     min="1"
                     class="form-control text-center"
                     style="max-width: 80px"
                   />
-                  <button type="submit" class="btn btn-primary btn-lg">Add to Cart</button>
+                  <button type="submit" class="btn button btn-lg">Add to Cart</button>
                 </div>
               </form>
             </template>
             <template v-else>
-              <p class="text-danger mb-0">Please log in to add to cart.</p>
+              <router-link to="/login" class="btn button btn-lg">
+                Login to Add to Cart
+              </router-link>
             </template>
           </div>
         </div>
@@ -87,25 +89,27 @@
 import { ref, onMounted } from "vue";
 import { useRoute } from "vue-router";
 import axios from "../../axios-auth";
+import { useAuthStore } from "@/stores/auth";
 
 const route = useRoute();
+const authStore = useAuthStore();
 
 const product = ref(null);
 const loading = ref(true);
 const error = ref(null);
 const successMessage = ref(null);
 const quantity = ref(1);
-const isLoggedIn = ref(false); // Now using local state instead of Vuex
+const isLoggedIn = ref(false);
 
 const fetchProduct = async () => {
   try {
     loading.value = true;
     error.value = null;
 
-    // First check authentication status
-    await checkAuthStatus();
+    // Check authentication status
+    isLoggedIn.value = !!authStore.user?.id;
 
-    // Then fetch product
+    // Fetch product
     const response = await axios.get(`/products/${route.params.id}`);
     product.value = response.data;
 
@@ -120,27 +124,25 @@ const fetchProduct = async () => {
   }
 };
 
-const checkAuthStatus = async () => {
-  try {
-    const response = await axios.get("/auth/check"); // Adjust to your auth endpoint
-    isLoggedIn.value = response.data.authenticated;
-  } catch (err) {
-    isLoggedIn.value = false;
-  }
-};
-
 const addToCart = async () => {
   try {
-    const response = await axios.post("/cart", {
-      // Changed from "/api/cart"
-      productId: product.value.id,
+    const userId = authStore.user?.id;
+    if (!userId) {
+      error.value = "You must be logged in to add items to cart";
+      return;
+    }
+
+    const response = await axios.put(`/cart/add/${product.value.id}`, {
+      user_id: userId,
       quantity: quantity.value,
     });
 
     successMessage.value = "Product added to cart successfully!";
+    setTimeout(() => (successMessage.value = null), 3000); // Clear message after 3 seconds
   } catch (err) {
-    error.value = err.response?.data?.message || "Failed to add product to cart";
+    error.value = err.response?.data?.errorMessage || "Failed to add product to cart";
     console.error("Error adding to cart:", err);
+    setTimeout(() => (error.value = null), 3000); // Clear error after 3 seconds
   }
 };
 
@@ -152,7 +154,7 @@ const formatPrice = (price) => {
 };
 
 const getImageUrl = (imagePath) => {
-  return `/images/${imagePath}`; // Adjust if your images are served differently
+  return `/img/${imagePath}`;
 };
 
 onMounted(() => {
@@ -162,7 +164,13 @@ onMounted(() => {
 
 <style scoped>
 .image-wrapper {
-  background-color: #f8f9fa;
+  background-color: #ffffff;
+  border-radius: 15px;
+  padding: 15px;
+}
+
+.alert {
+  transition: opacity 0.5s ease;
 }
 
 /* Keep your existing styles */
