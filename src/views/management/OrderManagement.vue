@@ -1,9 +1,9 @@
 <template>
-  <div class="container mt-5">
+  <div class="container mt-5 mb-5">
     <div class="row justify-content-center">
       <div class="col-md-10">
-        <div class="card mb-4 h-100">
-          <div class="card-header bg-primary text-white">
+        <div class="card h-100">
+          <div class="card-header bg text-white">
             <h4 class="text-center text-md-start">Order Management</h4>
           </div>
           <div class="card-body">

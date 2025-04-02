@@ -6,22 +6,43 @@ import { useRouter } from "vue-router";
 export const useAuthStore = defineStore("auth", () => {
   const router = useRouter();
   const user = ref(null);
-  const token = ref(localStorage.getItem("authToken") || null);
+  const accessToken = ref(localStorage.getItem("accessToken") || null);
+  const refreshToken = ref(localStorage.getItem("refreshToken") || null);
   const loading = ref(false);
   const error = ref(null);
   const initialized = ref(false);
 
-  const isAuthenticated = computed(() => !!token.value);
+  const isAuthenticated = computed(() => !!accessToken.value);
   const isAdmin = computed(() => user.value?.role === 1);
 
+  // Helper function to store tokens
+  const storeTokens = (access, refresh) => {
+    accessToken.value = access;
+    refreshToken.value = refresh;
+    localStorage.setItem("accessToken", access);
+    localStorage.setItem("refreshToken", refresh);
+  };
+
+  // Clear all auth data
+  const clearAuthData = () => {
+    accessToken.value = null;
+    refreshToken.value = null;
+    user.value = null;
+    localStorage.removeItem("accessToken");
+    localStorage.removeItem("refreshToken");
+  };
+
+  // Updated login function
   async function login(credentials) {
     loading.value = true;
     error.value = null;
     try {
       const response = await axios.post("/login", credentials);
-      token.value = response.data.token;
+
+      // Store both tokens
+      storeTokens(response.data.accessToken, response.data.refreshToken);
       user.value = response.data.user;
-      localStorage.setItem("authToken", token.value);
+
       router.push("/");
       return response.data;
     } catch (err) {
@@ -32,34 +53,68 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
+  // Refresh token function
+  async function refreshTokens() {
+    if (!refreshToken.value) {
+      logout();
+      return null;
+    }
+
+    try {
+      const response = await axios.post("/refresh-token", {
+        refresh_token: refreshToken.value,
+      });
+
+      // Store the new tokens
+      storeTokens(response.data.accessToken, response.data.refreshToken);
+      return response.data;
+    } catch (err) {
+      // If refresh fails, logout the user
+      logout();
+      throw err;
+    }
+  }
+
+  // Updated fetchUser with token refresh handling
   async function fetchUser() {
-    if (!token.value) return null;
-    loading.value = true;
+    if (!accessToken.value) return null;
+
     try {
       const response = await axios.get("/me");
       user.value = response.data;
       return user.value;
     } catch (err) {
       if (err.response?.status === 401) {
-        logout();
+        // Access token expired, try to refresh
+        try {
+          await refreshTokens();
+          // Retry the original request with new token
+          const retryResponse = await axios.get("/me");
+          user.value = retryResponse.data;
+          return user.value;
+        } catch (refreshErr) {
+          logout();
+          throw refreshErr;
+        }
       }
-      error.value = "Failed to fetch user data";
       throw err;
-    } finally {
-      loading.value = false;
     }
   }
 
+  // Updated logout function
   function logout() {
-    token.value = null;
-    user.value = null;
-    localStorage.removeItem("authToken");
+    // Optional: Notify backend to invalidate refresh token
+    axios.post("/logout").catch(() => {}); // Fail silently
+
+    clearAuthData();
     router.push("/login");
   }
 
+  // Initialize auth with token refresh check
   async function initializeAuth() {
     if (initialized.value) return;
-    if (token.value) {
+
+    if (accessToken.value) {
       try {
         await fetchUser();
       } catch (err) {
@@ -69,27 +124,19 @@ export const useAuthStore = defineStore("auth", () => {
     initialized.value = true;
   }
 
-  const canAccess = (route) => {
-    if (route.meta?.requiresAdmin) {
-      return isAdmin.value;
-    }
-    if (route.meta?.requiresAuth) {
-      return isAuthenticated.value;
-    }
-    return true;
-  };
   return {
     user,
-    token,
+    accessToken,
+    refreshToken,
     loading,
     error,
     isAuthenticated,
     isAdmin,
     login,
     logout,
+    refreshTokens,
     fetchUser,
     initializeAuth,
     initialized,
-    canAccess,
   };
 });
