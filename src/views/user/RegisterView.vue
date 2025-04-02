@@ -127,7 +127,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "../axios-auth";
+import axios from "../../axios-auth";
 
 const firstName = ref("");
 const lastName = ref("");

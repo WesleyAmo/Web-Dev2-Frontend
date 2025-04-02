@@ -1,14 +1,14 @@
 import { createRouter, createWebHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
-import Login from "../views/Login.vue";
-import Register from "../views/Register.vue";
-import MyAccount from "../views/MyAccount.vue";
-import ProductManagement from "../views/ProductManagement.vue";
-import CreateProduct from "../views/CreateProduct.vue";
-import ShoppingCart from "../views/ShoppingCart.vue";
-import ProductView from "../components/products/ProductDetailView.vue"; // Add this import
-import ProductList from "../components/products/ProductList.vue"; // Add this import
-import OrderManagement from "../views/OrderManagement.vue";
+import Login from "../views/user/LoginView.vue";
+import Register from "../views/user/RegisterView.vue";
+import MyAccount from "../views/user/MyAccountView.vue";
+import ProductManagement from "../views/management/ProductManagement.vue";
+import CreateProduct from "../components/products/CreateProduct.vue";
+import ShoppingCart from "../views/ShoppingCartView.vue";
+import ProductView from "../views/ProductDetailView.vue";
+import ProductList from "../views/ProductsView.vue";
+import OrderManagement from "../views/management/OrderManagement.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -38,6 +38,7 @@ const router = createRouter({
       path: "/management/products",
       name: "management/products",
       component: ProductManagement,
+      meta: { requiresAuth: true, requiresAdmin: true }, //  requiresAdmin
     },
     {
       path: "/cart",
@@ -45,7 +46,7 @@ const router = createRouter({
       component: ShoppingCart,
     },
     {
-      path: "/products/:id", // Add this new route
+      path: "/products/:id",
       name: "product-detail",
       component: ProductView,
       props: true,
@@ -58,34 +59,46 @@ const router = createRouter({
     {
       path: "/productmanagement",
       component: ProductManagement,
+      meta: { requiresAuth: true, requiresAdmin: true }, //  requiresAdmin
     },
     {
       path: "/productmanagement/createproduct",
       component: CreateProduct,
+      meta: { requiresAuth: true, requiresAdmin: true }, //  requiresAdmin
     },
     {
       path: "/orders",
       name: "OrderManagement",
       component: OrderManagement,
+      meta: { requiresAuth: true, requiresAdmin: true }, //  requiresAdmin
     },
   ],
 });
-// Navigation guard to check auth status
-router.beforeEach((to, from, next) => {
-  // Check if the route requires authentication
-  if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const isAuthenticated = localStorage.getItem("authToken");
 
-    if (!isAuthenticated) {
-      // Redirect to login page if not authenticated
-      next({ name: "login", query: { redirect: to.fullPath } });
-    } else {
-      // Continue to the route if authenticated
-      next();
-    }
-  } else {
-    // Continue to the route if it doesn't require auth
-    next();
+router.beforeEach(async (to, from, next) => {
+  const { useAuthStore } = await import("@/stores/auth");
+  const authStore = useAuthStore();
+
+  if (!authStore.initialized) {
+    await authStore.initializeAuth();
   }
+
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    if (!authStore.isAuthenticated) {
+      return next({
+        name: "login",
+        query: { redirect: to.fullPath },
+      });
+    }
+
+    if (to.matched.some((record) => record.meta.requiresAdmin)) {
+      if (!authStore.isAdmin) {
+        return next({ name: "home" }); // Or redirect to "/403"
+      }
+    }
+  }
+
+  next();
 });
+
 export default router;

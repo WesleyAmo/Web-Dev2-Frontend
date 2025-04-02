@@ -90,9 +90,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
-import axios from "../axios-auth";
-import EditUserModal from "../components/users/EditUserModal.vue";
-import ChangePasswordModal from "../components/users/ChangePasswordModal.vue";
+import axios from "../../axios-auth";
+import EditUserModal from "../../components/users/EditUserModal.vue";
+import ChangePasswordModal from "../../components/users/ChangePasswordModal.vue";
 
 const router = useRouter();
 const route = useRoute();

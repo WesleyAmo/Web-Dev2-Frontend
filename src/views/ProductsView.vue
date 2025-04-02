@@ -1,8 +1,8 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
-import axios from "../../axios-auth";
-import ProductListItem from "./ProductListItem.vue";
+import axios from "../axios-auth";
+import ProductListItem from "@/components/products/ProductListItem.vue";
 
 const route = useRoute();
 

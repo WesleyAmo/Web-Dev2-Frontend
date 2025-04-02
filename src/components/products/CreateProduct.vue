@@ -77,7 +77,7 @@
 
 <script>
 import { ref, onMounted } from "vue";
-import axios from "../axios-auth";
+import axios from "../../axios-auth";
 import { useRouter } from "vue-router";
 
 export default {

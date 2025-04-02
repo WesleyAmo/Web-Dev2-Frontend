@@ -28,9 +28,4 @@ onMounted(async () => {
   </div>
 </template>
 
-<style scoped>
-#main-content {
-  min-height: calc(100vh - 120px); /* Adjust based on header/footer height */
-  padding-bottom: 60px; /* Space for footer */
-}
-</style>
+<style scoped></style>

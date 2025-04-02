@@ -22,7 +22,7 @@ onMounted(async () => {
       <div class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
         <div v-for="category in categories" :key="category.id" class="col text-center">
           <RouterLink
-            :to="'/products?category=' + category.name"
+            :to="'/products?category=' + category.id"
             class="fw-bold text-white text-decoration-none fs-4"
           >
             {{ category.name }}

@@ -69,6 +69,15 @@ export const useAuthStore = defineStore("auth", () => {
     initialized.value = true;
   }
 
+  const canAccess = (route) => {
+    if (route.meta?.requiresAdmin) {
+      return isAdmin.value;
+    }
+    if (route.meta?.requiresAuth) {
+      return isAuthenticated.value;
+    }
+    return true;
+  };
   return {
     user,
     token,
@@ -81,5 +90,6 @@ export const useAuthStore = defineStore("auth", () => {
     fetchUser,
     initializeAuth,
     initialized,
+    canAccess,
   };
 });
