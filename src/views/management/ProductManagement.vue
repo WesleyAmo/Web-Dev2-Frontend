@@ -64,7 +64,7 @@
             <h4>Featured Products by Category</h4>
           </div>
           <div class="card-body d-flex flex-column">
-            <div v-for="category in categories" :key="category.id">
+            <div v-for="category in categoryStore.categories" :key="category.id">
               <h5>{{ category.name || "Unknown" }}</h5>
               <div class="row">
                 <template v-if="getFeaturedProducts(category.name).length === 0">
@@ -104,27 +104,18 @@
 <script>
 import { ref, onMounted } from "vue";
 import axios from "../../axios-auth";
+import { useCategoryStore } from "@/stores/categoryStore";
 
 export default {
   setup() {
     const allProducts = ref([]);
-    const categories = ref([]);
-
+    const categoryStore = useCategoryStore();
     const fetchProducts = async () => {
       try {
         const response = await axios.get("/products");
         allProducts.value = response.data;
       } catch (error) {
         console.error("Error fetching products:", error);
-      }
-    };
-
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("/categories");
-        categories.value = response.data;
-      } catch (error) {
-        console.error("Error fetching categories:", error);
       }
     };
 
@@ -179,12 +170,11 @@ export default {
 
     onMounted(() => {
       fetchProducts();
-      fetchCategories();
     });
 
     return {
       allProducts,
-      categories,
+      categoryStore,
       formatPrice,
       deleteProduct,
       featureProduct,

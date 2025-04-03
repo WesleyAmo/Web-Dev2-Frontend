@@ -61,12 +61,26 @@
               <div class="mb-3">
                 <label for="category" class="form-label">Category</label>
                 <select class="form-select" id="category" v-model="formData.category_id" required>
-                  <option v-for="category in categories" :key="category.id" :value="category.id">
+                  <option
+                    v-for="category in categoryStore.categories"
+                    :key="category.id"
+                    :value="category.id"
+                  >
                     {{ category.name }}
                   </option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-success">Create Product</button>
+              <button type="submit" class="btn btn-success" :disabled="submitting">
+                <span v-if="submitting">
+                  <span
+                    class="spinner-border spinner-border-sm"
+                    role="status"
+                    aria-hidden="true"
+                  ></span>
+                  Creating...
+                </span>
+                <span v-else> Create Product </span>
+              </button>
             </form>
           </div>
         </div>
@@ -79,6 +93,7 @@
 import { ref, onMounted } from "vue";
 import axios from "../../axios-auth";
 import { useRouter } from "vue-router";
+import { useCategoryStore } from "@/stores/categoryStore";
 
 export default {
   setup() {
@@ -92,13 +107,13 @@ export default {
     });
 
     const imagePreview = ref(null);
-    const categories = ref([]);
+    const submitting = ref(false); // New ref for submission state
+    const categoryStore = useCategoryStore();
 
     const handleFileSelect = (event) => {
       const file = event.target.files[0];
       if (!file) return;
 
-      // Validate file type
       const validTypes = ["image/png", "image/jpeg", "image/jpg"];
       if (!validTypes.includes(file.type)) {
         alert("Please select a .png or .jpeg file");
@@ -106,47 +121,31 @@ export default {
         return;
       }
 
-      // Create preview
       const reader = new FileReader();
       reader.onload = (e) => {
         imagePreview.value = e.target.result;
       };
       reader.readAsDataURL(file);
 
-      // Store the file path (relative to public folder)
       formData.value.image = `${file.name}`;
     };
 
-    const fetchCategories = async () => {
-      try {
-        const response = await axios.get("/categories");
-        categories.value = response.data;
-        if (categories.value.length > 0) {
-          formData.value.category_id = categories.value[0].id;
-        }
-      } catch (error) {
-        console.error("Error fetching categories:", error);
-      }
-    };
-
     const submitForm = async () => {
+      submitting.value = true;
       try {
-        // The backend will receive the image path like "/images/filename.jpg"
         await axios.post("/products/insert", formData.value);
         router.push("/productmanagement");
       } catch (error) {
         console.error("Error creating product:", error);
+        submitting.value = false;
       }
     };
 
-    onMounted(() => {
-      fetchCategories();
-    });
-
     return {
       formData,
-      categories,
+      categoryStore,
       imagePreview,
+      submitting,
       handleFileSelect,
       submitForm,
     };

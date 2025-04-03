@@ -1,26 +1,20 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "../axios-auth";
+import { useCategoryStore } from "@/stores/categoryStore";
 
-// Navigation categories fetched from API
-const categories = ref([]);
-
-// Fetch categories from API on component mount
-onMounted(async () => {
-  try {
-    const response = await axios.get("/categories");
-    categories.value = response.data; // Assuming response.data is an array of objects with id and name
-  } catch (error) {
-    console.error("Error fetching categories:", error);
-  }
-});
+const categoryStore = useCategoryStore();
 </script>
 
 <template>
   <footer class="text-white">
     <div class="container py-5 border-top">
       <div class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
-        <div v-for="category in categories" :key="category.id" class="col text-center">
+        <div
+          v-for="category in categoryStore.categories"
+          :key="category.id"
+          class="col text-center"
+        >
           <RouterLink
             :to="'/products?category=' + category.id"
             class="fw-bold text-white text-decoration-none fs-4"

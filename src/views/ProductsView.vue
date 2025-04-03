@@ -3,6 +3,7 @@ import { ref, onMounted, computed, watch } from "vue";
 import { useRoute } from "vue-router";
 import axios from "../axios-auth";
 import ProductListItem from "@/components/products/ProductListItem.vue";
+import { useCategoryStore } from "@/stores/categoryStore";
 
 const route = useRoute();
 
@@ -20,10 +21,6 @@ const fetchData = async () => {
   try {
     loading.value = true;
     error.value = null;
-
-    // Always fetch categories
-    const categoriesResponse = await axios.get("/categories");
-    categories.value = categoriesResponse.data;
 
     // Fetch products based on whether we're searching or not
     if (searchQuery.value) {

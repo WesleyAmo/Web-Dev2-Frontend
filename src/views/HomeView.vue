@@ -85,7 +85,7 @@ const fetchFeaturedProducts = async () => {
     loading.value = true;
     error.value = null;
 
-    const response = await axios.get("/products");
+    const response = await axios.get("/products/featured");
     products.value = response.data.filter((product) => product.isFeatured);
   } catch (err) {
     error.value = err.response?.data?.message || "Failed to load featured products";

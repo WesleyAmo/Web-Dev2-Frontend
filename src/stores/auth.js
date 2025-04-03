@@ -75,20 +75,20 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  // Updated fetchUser with token refresh handling
-  async function fetchUser() {
-    if (!accessToken.value) return null;
+  let fetchingUser = false;
 
+  async function fetchUser() {
+    if (!accessToken.value || fetchingUser) return null;
+
+    fetchingUser = true;
     try {
       const response = await axios.get("/me");
       user.value = response.data;
       return user.value;
     } catch (err) {
       if (err.response?.status === 401) {
-        // Access token expired, try to refresh
         try {
           await refreshTokens();
-          // Retry the original request with new token
           const retryResponse = await axios.get("/me");
           user.value = retryResponse.data;
           return user.value;
@@ -98,14 +98,13 @@ export const useAuthStore = defineStore("auth", () => {
         }
       }
       throw err;
+    } finally {
+      fetchingUser = false;
     }
   }
 
   // Updated logout function
   function logout() {
-    // Optional: Notify backend to invalidate refresh token
-    axios.post("/logout").catch(() => {}); // Fail silently
-
     clearAuthData();
     router.push("/login");
   }
@@ -113,7 +112,7 @@ export const useAuthStore = defineStore("auth", () => {
   // Initialize auth with token refresh check
   async function initializeAuth() {
     if (initialized.value) return;
-
+    initialized.value = true;
     if (accessToken.value) {
       try {
         await fetchUser();
@@ -121,7 +120,6 @@ export const useAuthStore = defineStore("auth", () => {
         console.error("Auth initialization failed:", err);
       }
     }
-    initialized.value = true;
   }
 
   return {

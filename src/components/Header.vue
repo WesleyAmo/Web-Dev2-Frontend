@@ -3,21 +3,14 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import axios from "../axios-auth";
 import { useAuthStore } from "@/stores/auth";
+import { useCategoryStore } from "@/stores/categoryStore";
 
 const router = useRouter();
 const searchQuery = ref("");
-const categories = ref([]);
 const authStore = useAuthStore();
 const showDropdown = ref(false);
 
-const fetchCategories = async () => {
-  try {
-    const response = await axios.get("/categories");
-    categories.value = response.data;
-  } catch (error) {
-    console.error("Failed to fetch categories:", error);
-  }
-};
+const categoryStore = useCategoryStore();
 
 const handleSearch = (e) => {
   e.preventDefault();
@@ -41,7 +34,6 @@ const toggleDropdown = () => {
 };
 
 onMounted(() => {
-  fetchCategories();
   authStore.initializeAuth();
 });
 </script>
@@ -216,7 +208,7 @@ onMounted(() => {
       >
         <!-- Categories -->
         <ul class="nav">
-          <li v-for="category in categories" :key="category.id" class="nav-item">
+          <li v-for="category in categoryStore.categories" :key="category.id" class="nav-item">
             <router-link
               :to="{ path: '/products', query: { category: category.id } }"
               class="nav-link text-white px-2"
