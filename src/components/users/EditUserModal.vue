@@ -106,12 +106,18 @@ const handleSubmit = async () => {
   if (localEditForm.value.email !== props.user.email) payload.email = localEditForm.value.email;
   if (localEditForm.value.phone !== props.user.phone) payload.phone = localEditForm.value.phone;
 
-  // Only send request if there are changes
   if (Object.keys(payload).length > 0) {
     try {
-      await emit("update", payload);
+      const result = await new Promise((resolve, reject) => {
+        emit("update", payload, (err) => {
+          if (err) reject(err);
+          else resolve();
+        });
+      });
     } catch (err) {
-      error.value = err.response?.data?.errorMessage || "Failed to update user information";
+      console.error("Update error:", err);
+      error.value =
+        err.response?.data?.errorMessage || err.message || "Failed to update user information";
     }
   } else {
     error.value = "No changes detected";

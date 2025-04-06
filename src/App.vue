@@ -22,7 +22,6 @@ onMounted(async () => {
 
 <template>
   <div id="app">
-    <!-- Conditionally render Header and Footer -->
     <Header v-if="!noHeaderFooterRoutes.includes(route.name)" />
     <div id="main-content">
       <RouterView />

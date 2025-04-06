@@ -40,11 +40,9 @@ onMounted(() => {
 
 <template>
   <header class="text-white">
-    <!-- Top Bar (Logo & User Menu) -->
     <div
       class="py-3 container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center headerbar"
     >
-      <!-- Logo -->
       <div class="text-center text-md-start">
         <RouterLink to="/" class="text-white fs-4 text-decoration-none">ElectroCore</RouterLink>
       </div>
@@ -60,10 +58,7 @@ onMounted(() => {
             <RouterLink to="/register" class="nav-link text-white">Register</RouterLink>
           </li>
         </template>
-
-        <!-- Show user dropdown and cart when authenticated -->
         <template v-else>
-          <!-- Cart Icon -->
           <li class="nav-item me-3">
             <RouterLink to="/cart" class="nav-link text-white position-relative">
               <svg
@@ -78,11 +73,10 @@ onMounted(() => {
                   d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"
                 />
               </svg>
-              <!-- Optional: Add badge for cart items count -->
-              <span v-if="false" <!-- Replace with actual cart item count logic -->
-                class="position-absolute top-0 start-100 translate-middle badge rounded-pill
-                bg-danger" >
-                <!-- {{ cartItemCount }} -->
+              <span
+                v-if="false"
+                class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+              >
               </span>
             </RouterLink>
           </li>
@@ -111,7 +105,7 @@ onMounted(() => {
               </svg>
               {{ authStore.user?.username || "Account" }}
             </a>
-            <ul class="dropdown-menu dropdown-menu-end" :class="{ show: showDropdown }" @click.stop>
+            <ul class="dropdown-menu" :class="{ show: showDropdown }" @click.stop>
               <li>
                 <RouterLink to="/my-account" class="dropdown-item" @click="showDropdown = false">
                   <svg
@@ -200,13 +194,10 @@ onMounted(() => {
         </template>
       </ul>
     </div>
-
-    <!-- Navigation Bar (Categories & Search) -->
     <nav class="py-2 subheader navbar">
       <div
         class="container-fluid d-flex flex-column flex-md-row justify-content-between align-items-center"
       >
-        <!-- Categories -->
         <ul class="nav">
           <li v-for="category in categoryStore.categories" :key="category.id" class="nav-item">
             <router-link
@@ -217,8 +208,6 @@ onMounted(() => {
             </router-link>
           </li>
         </ul>
-
-        <!-- Search Form -->
         <form @submit="handleSearch" class="d-flex mt-2 mt-md-0">
           <input
             v-model="searchQuery"
@@ -249,7 +238,6 @@ header {
   padding-right: 1rem;
 }
 
-/* Dropdown styles */
 .dropdown-menu {
   position: absolute;
   background-color: white;
@@ -260,6 +248,8 @@ header {
   min-width: 10rem;
   padding: 0.5rem 0;
   margin: 0.125rem 0 0;
+  right: 0;
+  left: auto;
 }
 
 .dropdown-item {
@@ -287,13 +277,11 @@ header {
   border-top: 1px solid rgba(0, 0, 0, 0.15);
 }
 
-/* Cart badge */
 .badge {
   font-size: 0.6rem;
   padding: 0.2em 0.4em;
 }
 
-/* Ensure dropdown is displayed correctly */
 @media (min-width: 768px) {
   .navbar,
   .headerbar {

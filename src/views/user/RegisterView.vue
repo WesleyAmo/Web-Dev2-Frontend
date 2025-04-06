@@ -207,5 +207,5 @@ const register = async () => {
 </script>
 
 <style scoped>
-/* Optional custom styles */
+
 </style>

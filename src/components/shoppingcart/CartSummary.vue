@@ -18,6 +18,10 @@
           <h5>€{{ total.toFixed(2) }}</h5>
         </div>
         <button @click="$emit('checkout')" class="btn btn-dark btn-block btn-lg">Checkout</button>
+        <p>
+          When clicking this button, the order will be created and your shopping cart will be
+          emptied.
+        </p>
       </div>
       <div v-else class="text-center">
         <h5>No items to summarize.</h5>

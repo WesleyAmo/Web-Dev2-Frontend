@@ -10,7 +10,6 @@
       </div>
     </div>
 
-    <!-- User Information Card -->
     <div class="row m-3 flex-grow-1">
       <div class="col-12 col-md-8 mx-auto">
         <div class="card mb-5">
@@ -97,7 +96,6 @@ import ChangePasswordModal from "../../components/users/ChangePasswordModal.vue"
 const router = useRouter();
 const route = useRoute();
 
-// User data
 const user = ref({
   id: "",
   username: "",
@@ -107,7 +105,6 @@ const user = ref({
   role: "",
 });
 
-// Form states
 const editForm = ref({
   username: "",
   fullName: "",
@@ -115,18 +112,23 @@ const editForm = ref({
   phone: "",
 });
 
-// UI states
 const showEditModal = ref(false);
 const showPasswordModal = ref(false);
 const successMessage = ref("");
 const error = ref("");
 
-// Fetch user data
+// Handle error event from child modal
+const handleError = (errorMessage) => {
+  // Set the error message
+  error.value = errorMessage;
+  // Close the modal
+  showEditModal.value = false;
+};
+
 const fetchUserData = async () => {
   try {
     const response = await axios.get("/me");
     user.value = response.data;
-    // Initialize edit form with current values
     editForm.value = {
       username: user.value.username,
       fullName: user.value.fullName,
@@ -134,7 +136,7 @@ const fetchUserData = async () => {
       phone: user.value.phone,
     };
 
-    // Check for success message in route query
+    // Check for success message
     if (route.query.successMessage) {
       successMessage.value = route.query.successMessage;
       // Clear after 5 seconds
@@ -146,7 +148,6 @@ const fetchUserData = async () => {
   }
 };
 
-// Modal handlers
 const closeEditModal = () => {
   showEditModal.value = false;
 };
@@ -155,21 +156,20 @@ const closePasswordModal = () => {
   showPasswordModal.value = false;
 };
 
-// Update user info
-const updateUserInfo = async (payload) => {
+const updateUserInfo = async (payload, callback) => {
   try {
     const response = await axios.put(`/user/update/${user.value.id}`, payload);
     user.value = { ...user.value, ...payload };
     successMessage.value = "User information updated successfully";
     showEditModal.value = false;
     setTimeout(() => (successMessage.value = ""), 5000);
+    callback(); // Success case
   } catch (err) {
-    // Error will be handled by the child component
-    throw err;
+    console.error("Update error:", err);
+    callback(err); // Error case
   }
 };
 
-// Change password
 const changePassword = async (passwordData) => {
   try {
     const response = await axios.put(`/user/update-password/${user.value.id}`, passwordData);
@@ -188,35 +188,3 @@ onMounted(() => {
   fetchUserData();
 });
 </script>
-
-<style scoped>
-.container {
-  min-height: 65vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.row.m-5 {
-  flex: 1;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .container {
-    padding: 0 15px;
-  }
-
-  .card {
-    margin-bottom: 20px;
-  }
-
-  .btn {
-    width: 100%;
-    margin-bottom: 10px;
-  }
-
-  .me-2 {
-    margin-right: 0 !important;
-  }
-}
-</style>

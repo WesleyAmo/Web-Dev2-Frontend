@@ -1,7 +1,6 @@
 <template>
   <div class="container mt-5">
     <div class="row justify-content-center">
-      <!-- Main Product Table -->
       <div class="col-12 col-md-10 col-lg-8">
         <div class="card mb-4 h-100">
           <div class="card-header bg text-white">
@@ -56,8 +55,6 @@
           </div>
         </div>
       </div>
-
-      <!-- Featured Products Section -->
       <div class="col-md-8 mt-5 mb-5">
         <div class="card mb-4 h-100">
           <div class="card-header bg text-white">
@@ -120,7 +117,6 @@ export default {
     };
 
     const formatPrice = (price) => {
-      // Convert string price to number if needed
       const priceNumber = typeof price === "string" ? parseFloat(price) : price;
       return "$" + (priceNumber ?? 0).toFixed(2);
     };

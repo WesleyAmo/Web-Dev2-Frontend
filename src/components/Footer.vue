@@ -1,6 +1,4 @@
 <script setup>
-import { ref, onMounted } from "vue";
-import axios from "../axios-auth";
 import { useCategoryStore } from "@/stores/categoryStore";
 
 const categoryStore = useCategoryStore();

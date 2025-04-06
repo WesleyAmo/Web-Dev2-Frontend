@@ -22,7 +22,6 @@ const fetchData = async () => {
     loading.value = true;
     error.value = null;
 
-    // Fetch products based on whether we're searching or not
     if (searchQuery.value) {
       // Use dedicated search endpoint
       const searchResponse = await axios.post("/products/search", {
@@ -30,7 +29,6 @@ const fetchData = async () => {
       });
       allProducts.value = searchResponse.data;
     } else {
-      // Regular product fetch with optional category filter
       const productsResponse = await axios.get("/products", {
         params: {
           category: selectedCategory.value,
@@ -39,7 +37,7 @@ const fetchData = async () => {
       allProducts.value = productsResponse.data;
     }
 
-    // Set current category if needed
+
     if (route.query.category) {
       selectedCategory.value = route.query.category;
       currentCategory.value = categories.value.find((c) => c.id == route.query.category);
@@ -55,13 +53,11 @@ const fetchData = async () => {
 const filteredProducts = computed(() => {
   let products = [...allProducts.value];
 
-  // If we did a search, the API already filtered for us
   if (!searchQuery.value && selectedCategory.value) {
-    // Apply category filter only if not searching
     products = products.filter((p) => p.category_id == selectedCategory.value);
   }
 
-  // Apply price sorting if selected
+
   if (priceSort.value) {
     products.sort((a, b) => {
       return priceSort.value === "asc" ? a.price - b.price : b.price - a.price;
@@ -71,7 +67,7 @@ const filteredProducts = computed(() => {
   return products;
 });
 
-// Watch for route changes
+
 watch(
   () => route.query,
   (newQuery) => {

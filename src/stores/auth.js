@@ -15,7 +15,6 @@ export const useAuthStore = defineStore("auth", () => {
   const isAuthenticated = computed(() => !!accessToken.value);
   const isAdmin = computed(() => user.value?.role === 1);
 
-  // Helper function to store tokens
   const storeTokens = (access, refresh) => {
     accessToken.value = access;
     refreshToken.value = refresh;
@@ -53,7 +52,6 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  // Refresh token function
   async function refreshTokens() {
     if (!refreshToken.value) {
       logout();
@@ -65,7 +63,6 @@ export const useAuthStore = defineStore("auth", () => {
         refresh_token: refreshToken.value,
       });
 
-      // Store the new tokens
       storeTokens(response.data.accessToken, response.data.refreshToken);
       return response.data;
     } catch (err) {
@@ -103,13 +100,11 @@ export const useAuthStore = defineStore("auth", () => {
     }
   }
 
-  // Updated logout function
   function logout() {
     clearAuthData();
     router.push("/login");
   }
 
-  // Initialize auth with token refresh check
   async function initializeAuth() {
     if (initialized.value) return;
     initialized.value = true;

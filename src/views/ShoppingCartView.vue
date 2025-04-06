@@ -141,7 +141,6 @@ export default {
     },
     async removeItem(productId) {
       try {
-        // Optimistic update - remove from UI first
         const itemIndex = this.cartItems.findIndex((item) => item.product.id === productId);
         if (itemIndex === -1) return;
 
@@ -173,7 +172,6 @@ export default {
           return;
         }
 
-        // Prepare the order data in the required format
         const orderData = {
           user: {
             id: authStore.user.id,
@@ -188,7 +186,6 @@ export default {
           })),
         };
 
-        // Send the request to create the order
         await axios.post(`/orders/create/${authStore.user.id}`, orderData);
 
         this.cartItems = [];
@@ -202,17 +199,14 @@ export default {
   async mounted() {
     const authStore = useAuthStore();
 
-    // Wait for auth to initialize
     if (!authStore.initialized) {
       await authStore.initializeAuth();
     }
 
-    // Initial fetch
     if (authStore.isAuthenticated) {
       await this.fetchCart();
     }
 
-    // Watch for auth changes
     watch(
       () => authStore.isAuthenticated,
       async (isAuthenticated) => {

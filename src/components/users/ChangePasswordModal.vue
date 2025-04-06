@@ -90,7 +90,6 @@ const handleSubmit = async () => {
       newPassword: passwordForm.value.newPassword,
     });
 
-    // Reset form on success
     passwordForm.value = {
       oldPassword: "",
       newPassword: "",

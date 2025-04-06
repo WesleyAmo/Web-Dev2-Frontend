@@ -107,7 +107,7 @@ export default {
     });
 
     const imagePreview = ref(null);
-    const submitting = ref(false); // New ref for submission state
+    const submitting = ref(false);
     const categoryStore = useCategoryStore();
 
     const handleFileSelect = (event) => {

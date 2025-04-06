@@ -1,14 +1,11 @@
-# eindopdracht
+# Web Develeopment 2 Front End
 
-This template should help get you started developing with Vue 3 in Vite.
+This is the frontend for the Web Development 2 assigment
 
-## Recommended IDE Setup
+# Accounts
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vite.dev/config/).
+Admin: email: admin@admin.com password: password123
+User: email: user@user.com password: password123
 
 ## Project Setup
 
@@ -26,10 +23,4 @@ npm run dev
 
 ```sh
 npm run build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-npm run lint
 ```

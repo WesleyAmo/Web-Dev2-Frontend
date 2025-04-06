@@ -4,14 +4,11 @@
       <div class="card-body">
         <form @submit.prevent="login">
           <h1 class="h3 mb-3 font-weight-normal text-center">Please sign in</h1>
-
-          <!-- Display success message -->
           <div v-if="successMessage" class="alert alert-success text-center">
             {{ successMessage }}
           </div>
-          <!-- Display error message -->
-          <div v-if="error" class="alert alert-danger text-center">
-            {{ error }}
+          <div v-if="authStore.error" class="alert alert-danger text-center">
+            {{ authStore.error }}
           </div>
 
           <div class="mb-3">
@@ -89,5 +86,5 @@ const login = async () => {
 </script>
 
 <style scoped>
-/* Add any additional styles here */
+
 </style>

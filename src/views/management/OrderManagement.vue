@@ -114,7 +114,6 @@ export default {
         });
 
         if (response.data.success) {
-          // Update the local order status - Vue will handle the DOM update
           const orderIndex = this.orders.findIndex((o) => o.id === orderId);
           if (orderIndex !== -1) {
             this.orders[orderIndex].status = newStatus;
@@ -125,8 +124,6 @@ export default {
       } catch (error) {
         alert("Error updating order status: " + this.getErrorMessage(error));
         console.error("Update error:", error);
-
-        // Revert the select box (still needs DOM manipulation since it's a form element)
         const selectElement = document.querySelector(`#order-row-${orderId} select`);
         const order = this.orders.find((o) => o.id === orderId);
         if (order && selectElement) {

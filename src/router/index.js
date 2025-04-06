@@ -93,7 +93,7 @@ router.beforeEach(async (to, from, next) => {
 
     if (to.matched.some((record) => record.meta.requiresAdmin)) {
       if (!authStore.isAdmin) {
-        return next({ name: "home" }); // Or redirect to "/403"
+        return next({ name: "home" });
       }
     }
   }

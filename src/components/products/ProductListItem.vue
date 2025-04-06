@@ -1,6 +1,5 @@
 <template>
   <div class="col-md-4 mb-4 d-flex justify-content-center">
-    <!-- Added pt-3 class -->
     <div class="card border-0 shadow-sm h-100 d-flex flex-column" style="width: 25rem">
       <div class="card-img-top-wrapper pt-3" style="height: 250px; overflow: hidden">
         <img

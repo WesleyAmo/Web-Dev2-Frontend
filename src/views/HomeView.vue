@@ -1,6 +1,5 @@
 <template>
   <div class="container-fluid p-0 m-0">
-    <!-- Hero Section -->
     <section class="position-relative overflow-hidden" style="height: 60vh">
       <div class="position-absolute w-100 h-100">
         <img
@@ -28,8 +27,6 @@
         </div>
       </div>
     </section>
-
-    <!-- Featured Products Section -->
     <section class="py-4">
       <div class="container">
         <div class="text-center mb-3">
@@ -119,7 +116,7 @@ onMounted(() => {
 
 <style scoped>
 .card-img-top-wrapper {
-  background-color: #f8f9fa; /* Light background for images with transparency */
+  background-color: #f8f9fa; 
 }
 
 .card {

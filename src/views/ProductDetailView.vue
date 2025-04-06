@@ -17,7 +17,6 @@
       <h1 class="text-center mb-4">{{ product.name }}</h1>
 
       <div class="row mb-5">
-        <!-- Image Gallery -->
         <div class="col-md-6 text-center">
           <div class="image-wrapper" style="aspect-ratio: 16 / 9; overflow: hidden; width: 100%">
             <img
@@ -173,5 +172,4 @@ onMounted(() => {
   transition: opacity 0.5s ease;
 }
 
-/* Keep your existing styles */
 </style>
